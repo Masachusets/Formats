@@ -1,10 +1,20 @@
 import json
-from from xml.dom import minidom
+import xml.etree.ElementTree as ET
 
 
-def words_longer_than_6_json(file):
-    with open(file, encoding='utf-8') as f:
-        data = json.load(f)
+def words_longer_than_6_xml(xml_file):
+    with open(xml_file, encoding='utf-8') as xmlf:
+        tree = ET.parse(xmlf)
+        data = tree.findall('channel/item/description')
+    lst = []
+    for elem in data:
+        lst += filter(lambda x: len(x) > 5, elem.text.split())
+    return lst
+
+
+def words_longer_than_6_json(json_file):
+    with open(json_file, encoding='utf-8') as jsonf:
+        data = json.load(jsonf)
     lst_news = data['rss']['channel']['items']
     lst = []
     for new in lst_news:
@@ -35,5 +45,5 @@ def output(dic: dict):
         i += 1
 
 
-#print(words_longer_than_6('newsafr.json'))
-output(top_ten(words_longer_than_6_json('newsafr.json')))
+#output(top_ten(words_longer_than_6_json('newsafr.json')))
+#output(top_ten(words_longer_than_6_xml('newsafr.xml')))
